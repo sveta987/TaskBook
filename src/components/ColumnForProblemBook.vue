@@ -31,11 +31,11 @@
                     ...
                   </template>
                   <template #content>
-                      <div class="flex items-center gap-2 py-[5px]" @click="editTask(element)">
+                      <div class="flex items-center gap-2 py-[5px] cursor-pointer" @click="editTask(element)">
                         <IconPencilMinus />
                         Редактировать
                       </div>
-                      <div class="flex items-center gap-2 py-[5px]" @click="openModalForDeleteTask(element)">
+                      <div class="flex items-center gap-2 py-[5px] cursor-pointer" @click="openModalForDeleteTask(element)">
                         <IconTrash />
                         Удалить
                       </div>

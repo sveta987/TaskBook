@@ -1,5 +1,5 @@
 <template>
-  <div id="dropdown" class="dropdown relative" ref="dropdown">
+  <div id="dropdown" class="dropdown" ref="dropdown">
     <div ref="myDropdown" :class="{'show':isOpen}" @click="toggleDropdown">
       <slot name="trigger"></slot>
     </div>
@@ -11,14 +11,16 @@
       leave-from-class="transform opacity-100 scale-100"
       leave-to-class="transform opacity-0 scale-95"
     >
+      <teleport to="body">
       <div v-show="isOpen"
            :class="[widthClass, alignmentClasses,offsetClass, position]"
-           @click.stop="handleClickInside"
-           class="absolute z-[55] rounded-[4px] shadow-lg">
+           class="absolute z-[55] rounded-[4px] shadow-lg"
+           :style="{'top': coordinates.top + 'px', 'left': coordinates.left + 'px'}">
         <div class="ring-1 ring-black rounded-[4px] ring-opacity-5 w-full" :class="contentClasses">
           <slot name="content" />
         </div>
       </div>
+      </teleport>
     </transition>
   </div>
 </template>
@@ -55,6 +57,7 @@ const props = defineProps({
   },
 });
 const emits = defineEmits(['isOpen']);
+const coordinates = ref({top: 0, left: 0});
 const dropdown = ref(null);
 const isOpen = ref(false);
 
@@ -62,24 +65,12 @@ watch(isOpen, () => {
   emits('isOpen', isOpen.value);
 });
 
-const toggleDropdown = () => {
+const toggleDropdown = (event) => {
   isOpen.value = !isOpen.value;
-};
-
-const closeDropdown = () => {
-  isOpen.value = false;
-};
-
-const handleClickOutside = (event) => {
-  if (!dropdown.value.contains(event.target)) {
-    closeDropdown();
-  }
-};
-
-const handleClickInside = () => {
-  if (props.closeOnInsideClick) {
-    closeDropdown();
-  }
+  let myDiv = event.target;
+  let boundingRect = myDiv.getBoundingClientRect();
+  coordinates.value.left = boundingRect.right ;
+  coordinates.value.top =  boundingRect.bottom;
 };
 
 const widthClass = computed(() => {
@@ -119,7 +110,4 @@ const alignmentClasses = computed(() => {
 
   return 'origin-top';
 });
-
-onMounted(() => document.addEventListener('mousedown', handleClickOutside));
-onUnmounted(() => document.removeEventListener('mousedown', handleClickOutside));
 </script>
