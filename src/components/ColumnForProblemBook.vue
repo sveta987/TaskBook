@@ -186,7 +186,7 @@ const end = async (element) => {
     let response = await axios.put(`http://localhost:3000/tasks/${element.clone.id}`,
       { ...props.tasks.find(task => task.id === element.clone.id), ...{ 'chapter_id': Number(element.to.id) } });
     updateTask(element.clone.id, { 'chapter_id': Number(element.to.id) });
-    showNotification(response.data.task, 'success', false, 5000, `Задача перенесена в «${props.chapters.find(chapter => chapter.id === element.to.id).name}» `);
+    showNotification(response.data.task, 'success', false, 5000, `Задача перенесена в «${props.chapters.find(chapter => chapter.id === Number(element.to.id)).name}» `);
   } catch (error) {
     console.error('Error updating data:', error);
     showNotification(error.message, 'error', false, 5000, `Error`);
